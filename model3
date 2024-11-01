@@ -15,3 +15,18 @@
 3-32) เป็นค่า features ทั้ง 30
 
 ให้ทำการทดลองโดยใช้ 10% cross validation เพื่อทดสอบ validity ของ network ที่ได้ และให้ทำการเปลี่ยนแปลงจำนวน hidden layer และ nodes
+
+โปรแกรมนี้ใช้ Genetic Algorithm (GA) เพื่อฝึก Multilayer Perceptron (MLP) ในการจำแนกประเภทข้อมูลจากชุดข้อมูล WDBC โดย MLP จะมีการปรับค่า weights และ biases ตามกลไกการคัดเลือกทางพันธุกรรมใน GA และใช้ฟังก์ชันการสูญเสีย Mean Squared Error (MSE) เป็นตัวชี้วัดเพื่อหาค่า weights และ biases ที่ให้ผลลัพธ์ที่ดีที่สุด
+
+การเตรียมข้อมูล:
+
+โหลดข้อมูล wdbc.data จาก UCI repository แล้วแปลงข้อมูลให้อยู่ในรูปแบบที่เหมาะสมกับ MLP
+เลือก 10% cross validation เพื่อแบ่งข้อมูลออกเป็นชุดฝึกและชุดทดสอบ
+โครงสร้างของ MLP:
+
+สร้าง MLP ที่มีหนึ่งชั้นซ่อน (hidden layer) และจำนวน nodes สามารถกำหนดได้
+ใช้ Sigmoid activation function ใน hidden layer และ output layer
+Genetic Algorithm (GA):
+
+GA จะทำการสร้างประชากรของแต่ละโครงข่าย (individuals) โดยแต่ละ individuals จะมีค่าที่ต่างกันใน weights และ biases ของ MLP
+ใช้กลไกการ crossover, mutation และ selection เพื่อพัฒนาโครงข่ายไปเรื่อยๆ จนกว่าจะถึงค่าที่เหมาะสมที่สุด
