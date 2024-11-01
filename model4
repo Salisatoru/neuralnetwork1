@@ -1,0 +1,54 @@
+1. การสร้างโครงสร้าง Multilayer Perceptron (MLP)
+โปรแกรมสร้างโครงสร้างของ MLP ด้วย MLP class โดยมี 2 ชั้นหลัก คือ Hidden Layer และ Output Layer โดยรายละเอียดของ MLP class มีดังนี้:
+
+__init__: ฟังก์ชันนี้กำหนดจำนวน input nodes, hidden nodes และ output nodes พร้อมสร้างค่า random สำหรับ weight และ bias แต่ละชั้น
+
+weights_input_hidden: Matrix ของ weights ระหว่าง Input และ Hidden Layer
+weights_hidden_output: Matrix ของ weights ระหว่าง Hidden และ Output Layer
+bias_hidden และ bias_output: Bias สำหรับ Hidden Layer และ Output Layer ตามลำดับ
+forward(X): ฟังก์ชันนี้ทำการฟอร์เวิร์ดพาส (Forward Pass) โดยคำนวณผลลัพธ์จาก Input ผ่าน Hidden Layer ไปยัง Output Layer
+
+self.hidden = sigmoid(np.dot(X, self.weights_input_hidden) + self.bias_hidden): คำนวณค่าของ Hidden Layer โดยใช้ Sigmoid Activation Function
+self.output = np.dot(self.hidden, self.weights_hidden_output) + self.bias_output: คำนวณค่าของ Output Layer
+set_weights(weights): ฟังก์ชันนี้ใช้สำหรับอัปเดต weight และ bias ใน MLP โดยใช้ weight ใหม่ที่ได้จาก PSO โดยจะทำการแบ่งค่า weight ออกเป็นส่วน ๆ ให้สอดคล้องกับโครงสร้างของ MLP และจัดเรียงค่า weight ให้ตรงกับโครงสร้าง weights_input_hidden, weights_hidden_output, bias_hidden, และ bias_output
+
+2. ฟังก์ชัน Objective สำหรับ PSO
+objective เป็นฟังก์ชันที่ใช้คำนวณค่า Mean Absolute Error (MAE) ซึ่งเป็นค่าที่ PSO จะต้องพยายามลดให้ต่ำที่สุด
+
+กระบวนการทำงาน: ฟังก์ชันนี้รับ weights แล้วเรียกใช้ set_weights เพื่อกำหนด weight ใหม่ให้กับโมเดล จากนั้นทำการฟอร์เวิร์ดพาสผ่านโมเดลเพื่อให้ได้การพยากรณ์ผลลัพธ์สุดท้าย แล้วคำนวณ MAE ระหว่างค่าที่พยากรณ์ได้ (predictions) และค่าจริง (y_test)
+3. การสร้าง Particle Swarm Optimization (PSO)
+PSO class ทำหน้าที่ดำเนินการตามอัลกอริทึม PSO เพื่อหา weight ที่เหมาะสมที่สุดให้กับ MLP
+
+__init__: กำหนดพารามิเตอร์ต่าง ๆ เช่น จำนวน particles (num_particles), จำนวนมิติของแต่ละ particle (dimensions), ขอบเขต (bounds), จำนวนรอบที่ต้องการ (max_iter), และฟังก์ชัน objective
+
+เริ่มต้นตำแหน่ง (positions) และความเร็ว (velocities) ของแต่ละ particle แบบสุ่ม
+เก็บค่าที่ดีที่สุดของแต่ละ particle (p_best_positions และ p_best_scores) และค่าที่ดีที่สุดของ swarm ทั้งหมด (g_best_position และ g_best_score)
+optimize: ฟังก์ชันที่ทำการปรับปรุงตำแหน่งและความเร็วของ particle ในแต่ละรอบการฝึกโดยทำงานตามหลักการของ PSO
+
+วนลูปในแต่ละ iteration:
+คำนวณค่า objective function (MAE) สำหรับ particle แต่ละตัว และอัปเดตค่า p_best และ g_best
+อัปเดตความเร็วและตำแหน่งของ particle แต่ละตัวด้วยสมการ PSO โดยใช้ inertia (w), cognitive component (c1), และ social component (c2)
+บันทึกค่าที่ดีที่สุดที่พบใน mae_list สำหรับการแสดงผลกราฟ MAE ของแต่ละรอบการฝึก
+4. การเตรียมข้อมูล
+โปรแกรมโหลดและเตรียมข้อมูลที่ใช้ในการทดลอง:
+
+การเลือกฟีเจอร์: ใช้ attributes หมายเลข 3, 6, 8, 10, 11, 12, 13, และ 14 เป็น input และ attribute หมายเลข 5 เป็น output (Benzene concentration)
+การแบ่งข้อมูลเป็นชุด Train และ Test: แบ่งข้อมูลออกเป็นชุด train (90%) และ test (10%) เพื่อให้มีการทดสอบความแม่นยำของโมเดล
+5. การฝึกโมเดลด้วย PSO
+กำหนดพารามิเตอร์ PSO: ระบุจำนวน particle (num_particles), จำนวน dimensions ของ particle (ตามจำนวน weights ของ MLP), ขอบเขต (bounds) ของค่า weights และจำนวนรอบการฝึก (max_iter)
+เรียกใช้งาน PSO: ใช้ฟังก์ชัน optimize ของ PSO เพื่อหาค่าที่เหมาะสมที่สุด โดยกำหนดฟังก์ชัน objective เป็น objective ซึ่งจะคืนค่า MAE ที่ต่ำที่สุดหลังจากรอบการฝึกที่กำหนดไว้เสร็จสิ้น
+6. การทำนายและแสดงผล
+ทำนายค่าด้วย weights ที่ดีที่สุด: ตั้งค่า weights ที่ดีที่สุดให้กับ MLP และทำการทำนายค่าความเข้มข้นของเบนซีน (predictions) จาก X_test
+การแสดงกราฟ MAE ในแต่ละรอบการฝึก: ใช้ matplotlib เพื่อแสดงกราฟ MAE ในแต่ละ iteration ของ PSO เพื่อดูว่าค่า MAE ลดลงอย่างไร
+การเปรียบเทียบค่าที่พยากรณ์กับค่าจริง: ใช้ matplotlib เพื่อแสดงกราฟการเปรียบเทียบระหว่างค่าที่โมเดลพยากรณ์ได้กับค่าจริง (True Values) ของ Benzene concentration
+7. การสรุปผลลัพธ์
+พิมพ์ผลลัพธ์ที่ดีที่สุด: แสดงค่า MAE ที่ดีที่สุดที่ได้จาก PSO และแสดง weights ที่เหมาะสมที่สุดซึ่งช่วยให้ได้ผลลัพธ์นั้น
+สรุปภาพรวมของการทำงานโปรแกรม
+โปรแกรมนี้สร้าง MLP โดยกำหนดค่าของ weight และ bias ให้เป็นไปตาม Particle Swarm Optimization เพื่อให้ผลลัพธ์ MAE ต่ำที่สุดในการพยากรณ์ค่าความเข้มข้นของเบนซีนในอากาศ
+
+
+
+
+
+
+
