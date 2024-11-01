@@ -1,0 +1,17 @@
+เขียน program สำหรับการ Train Multilayer Perceptron โดยใช้ Genetic Algorithms รายงานจะต้องประกอบไปด้วย
+
+            1. ลักษณะการทำงานของระบบ
+
+            2. simulation ของระบบ ผลการทดลอง และวิเคราะห์
+
+            3 โปรแกรม
+
+ให้ทำการทดลองกับ wdbc.data (Wisconsin Diagnostic Breast Cancer (WDBC) จาก UCI Machine learning Repository) โดยที่ data set นี้ มี 2 classes และ 30 features ซึ่งในแต่ละ sample จะมีทั้งหมด 32 ค่าโดยที่
+
+1) ID number
+
+2) Diagnosis (M = malignant, B = benign) à class
+
+3-32) เป็นค่า features ทั้ง 30
+
+ให้ทำการทดลองโดยใช้ 10% cross validation เพื่อทดสอบ validity ของ network ที่ได้ และให้ทำการเปลี่ยนแปลงจำนวน hidden layer และ nodes
